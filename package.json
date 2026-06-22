@@ -1,0 +1,13 @@
+{
+  "name": "direction-slash",
+  "private": true,
+  "description": "방향 베기 — ←↑→ 방향 매칭 HTML5 게임",
+  "scripts": {
+    "favicon": "node tools/process-favicon.js",
+    "deploy": "vercel deploy --prod --yes",
+    "deploy:preview": "vercel deploy --yes"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.2"
+  }
+}
