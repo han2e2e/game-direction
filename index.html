@@ -1184,11 +1184,11 @@
     const SPECIAL_COMBO_REQ = 20;
     const ARROW_SPEED_MIN = 720;
     const ARROW_SPEED_MAX = 1320;
-    const ARROW_SPEED_SCALE = 0.7;
+    const ARROW_SPEED_SCALE = 0.82;
     const MAX_ON_SCREEN_ARROWS = 1;
     const UP_PARRY_ZONE_SCALE = 1.2;
-    const ARROW_LANE_OFFSETS = [-88, -44, 44, 88];
-    const MIN_ARROW_SPACING = 108;
+    const ARROW_LANE_OFFSETS = [-56, -28, 28, 56];
+    const MIN_ARROW_SPACING = 72;
 
     let W, H, cx, cy;
     let gameScale = 1;
@@ -1471,20 +1471,7 @@
 
     function arrowHitsPlayer(atk) {
       const cc = getCombatCenter();
-      const bodyR = getBodyHitRadius();
-      const dx = Math.abs(atk.x - cc.x);
-      const dy = Math.abs(atk.y - cc.y);
-
-      if (atk.spawnDir === SlashDir.UP) {
-        return dx <= bodyR * 2 && atk.y >= cc.y - bodyR && atk.y <= cc.y + bodyR * 2.5;
-      }
-      if (atk.spawnDir === SlashDir.LEFT) {
-        return dy <= bodyR * 2 && atk.x >= cc.x - bodyR && atk.x <= cc.x + bodyR * 2.5;
-      }
-      if (atk.spawnDir === SlashDir.RIGHT) {
-        return dy <= bodyR * 2 && atk.x <= cc.x + bodyR && atk.x >= cc.x - bodyR * 2.5;
-      }
-      return Math.hypot(atk.x - cc.x, atk.y - cc.y) <= bodyR;
+      return Math.hypot(atk.x - cc.x, atk.y - cc.y) <= getBodyHitRadius();
     }
 
     function tryLockLandscape() {
@@ -1570,15 +1557,15 @@
       let minGap, maxGap;
 
       if (d < 1.8) {
-        minGap = 0.05; maxGap = 0.12;
-      } else if (d < 2.8) {
-        minGap = 0.03; maxGap = 0.09;
-      } else if (d < 3.8) {
         minGap = 0.02; maxGap = 0.07;
+      } else if (d < 2.8) {
+        minGap = 0.015; maxGap = 0.055;
+      } else if (d < 3.8) {
+        minGap = 0.01; maxGap = 0.04;
       } else if (d < 4.5) {
-        minGap = 0.015; maxGap = 0.05;
+        minGap = 0.008; maxGap = 0.03;
       } else {
-        minGap = 0.01; maxGap = 0.035;
+        minGap = 0.005; maxGap = 0.022;
       }
 
       spawnInterval = minGap + Math.random() * (maxGap - minGap);
@@ -1592,13 +1579,9 @@
       return ARROW_LANE_OFFSETS.map(v => s(v)).sort(() => Math.random() - 0.5);
     }
 
-    function getSpawnDirsByPriority() {
+    function pickNextSpawnDir() {
       const dirs = [SlashDir.LEFT, SlashDir.RIGHT, SlashDir.UP];
-      return dirs.sort((a, b) => {
-        const aCount = attacks.filter(atk => atk.alive && atk.spawnDir === a).length;
-        const bCount = attacks.filter(atk => atk.alive && atk.spawnDir === b).length;
-        return aCount - bCount;
-      });
+      return dirs[Math.floor(Math.random() * dirs.length)];
     }
 
     function buildArrowSpawn(spawnDir, laneOffset, cc, margin, edgePadX) {
@@ -1607,8 +1590,8 @@
         return {
           x,
           y: -margin,
-          targetX: x,
-          targetY: H + margin,
+          targetX: cc.x,
+          targetY: cc.y,
           laneOffset
         };
       }
@@ -1617,8 +1600,8 @@
         return {
           x: -margin - edgePadX,
           y,
-          targetX: W + margin + edgePadX,
-          targetY: y,
+          targetX: cc.x,
+          targetY: cc.y,
           laneOffset
         };
       }
@@ -1626,8 +1609,8 @@
       return {
         x: W + margin + edgePadX,
         y,
-        targetX: -margin - edgePadX,
-        targetY: y,
+        targetX: cc.x,
+        targetY: cc.y,
         laneOffset
       };
     }
@@ -1661,7 +1644,7 @@
 
     function queueNextArrowSoon() {
       if (getAliveArrowCount() >= MAX_ON_SCREEN_ARROWS) return;
-      spawnTimer = spawnInterval;
+      spawnTimer = spawnInterval * 0.35;
     }
 
     function showGameOverPanel() {
@@ -2162,37 +2145,35 @@
       const margin = s(30);
       const edgePadX = letterboxPadX / displayScale;
       const cc = getCombatCenter();
-      const dirs = getSpawnDirsByPriority();
+      const spawnDir = pickNextSpawnDir();
 
-      for (const spawnDir of dirs) {
-        for (const laneOffset of shuffleLanes()) {
-          const spawn = buildArrowSpawn(spawnDir, laneOffset, cc, margin, edgePadX);
-          if (!isSpawnPositionClear(spawnDir, laneOffset, spawn.x, spawn.y)) continue;
+      for (const laneOffset of shuffleLanes()) {
+        const spawn = buildArrowSpawn(spawnDir, laneOffset, cc, margin, edgePadX);
+        if (!isSpawnPositionClear(spawnDir, laneOffset, spawn.x, spawn.y)) continue;
 
-          const dx = spawn.targetX - spawn.x;
-          const dy = spawn.targetY - spawn.y;
-          const dist = Math.hypot(dx, dy) || 1;
-          const travelTime = dist / getArrowSpeed();
+        const dx = spawn.targetX - spawn.x;
+        const dy = spawn.targetY - spawn.y;
+        const dist = Math.hypot(dx, dy) || 1;
+        const travelTime = dist / getArrowSpeed();
 
-          attacks.push({
-            startX: spawn.x,
-            startY: spawn.y,
-            targetX: spawn.targetX,
-            targetY: spawn.targetY,
-            travelTime,
-            elapsed: 0,
-            x: spawn.x,
-            y: spawn.y,
-            angle: Math.atan2(dy, dx),
-            length: s(34),
-            thickness: s(9),
-            alive: true,
-            parried: false,
-            spawnDir,
-            laneOffset
-          });
-          return true;
-        }
+        attacks.push({
+          startX: spawn.x,
+          startY: spawn.y,
+          targetX: spawn.targetX,
+          targetY: spawn.targetY,
+          travelTime,
+          elapsed: 0,
+          x: spawn.x,
+          y: spawn.y,
+          angle: Math.atan2(dy, dx),
+          length: s(34),
+          thickness: s(9),
+          alive: true,
+          parried: false,
+          spawnDir,
+          laneOffset
+        });
+        return true;
       }
       return false;
     }
