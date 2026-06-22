@@ -265,7 +265,6 @@
       }
       .menu-stack {
         gap: 20px;
-        padding-top: min(16vh, 120px);
       }
       .ranking-inner {
         width: min(520px, 94vw);
@@ -371,7 +370,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       z-index: 110;
       pointer-events: auto;
       font-family: 'Segoe UI', 'Malgun Gothic', sans-serif;
@@ -386,13 +385,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      gap: min(8vh, 64px);
+      justify-content: center;
+      gap: clamp(28px, 6vh, 56px);
       width: 100%;
       max-width: 960px;
-      padding: min(20vh, 168px) 5vw 0;
+      padding: 0 5vw;
       box-sizing: border-box;
-      margin: 0 auto;
+      margin: auto;
       flex-shrink: 0;
       text-align: center;
     }
@@ -1459,7 +1458,7 @@
     function slashDirToPattern(dir) {
       if (dir === SlashDir.LEFT) return 'diag_L';
       if (dir === SlashDir.RIGHT) return 'diag_R';
-      return 'down';
+      return 'up';
     }
 
     function getApproachAngle(atk) {
@@ -1472,20 +1471,31 @@
 
     function arrowHitsPlayer(atk) {
       const cc = getCombatCenter();
-      const bodyR = getBodyHitRadius();
-      const dx = Math.abs(atk.x - cc.x);
-      const dy = Math.abs(atk.y - cc.y);
+      return Math.hypot(atk.x - cc.x, atk.y - cc.y) <= getBodyHitRadius();
+    }
 
-      if (atk.spawnDir === SlashDir.UP) {
-        return dx <= bodyR * 2 && atk.y >= cc.y - bodyR && atk.y <= cc.y + bodyR * 2.5;
+    function isInParryZone(ax, ay, atk) {
+      const cc = getCombatCenter();
+      const bodyR = getBodyHitRadius();
+      const pr = getParryRadius();
+
+      if (atk?.spawnDir === SlashDir.UP) {
+        const upPr = pr * UP_PARRY_ZONE_SCALE;
+        const dx = Math.abs(ax - cc.x);
+        const above = cc.y - ay;
+        return dx <= upPr * 0.55 && above > bodyR && above <= upPr;
       }
-      if (atk.spawnDir === SlashDir.LEFT) {
-        return dy <= bodyR * 2 && atk.x >= cc.x - bodyR && atk.x <= cc.x + bodyR * 2.5;
+      if (atk?.spawnDir === SlashDir.LEFT) {
+        const leftGap = cc.x - ax;
+        return Math.abs(ay - cc.y) <= pr * 0.55 && leftGap > bodyR && leftGap <= pr;
       }
-      if (atk.spawnDir === SlashDir.RIGHT) {
-        return dy <= bodyR * 2 && atk.x <= cc.x + bodyR && atk.x >= cc.x - bodyR * 2.5;
+      if (atk?.spawnDir === SlashDir.RIGHT) {
+        const rightGap = ax - cc.x;
+        return Math.abs(ay - cc.y) <= pr * 0.55 && rightGap > bodyR && rightGap <= pr;
       }
-      return Math.hypot(atk.x - cc.x, atk.y - cc.y) <= bodyR;
+
+      const dist = Math.hypot(ax - cc.x, ay - cc.y);
+      return dist <= getParryRadiusAt(ax, ay) && dist > bodyR;
     }
 
     function tryLockLandscape() {
@@ -1608,8 +1618,8 @@
         return {
           x,
           y: -margin,
-          targetX: x,
-          targetY: H + margin,
+          targetX: cc.x,
+          targetY: cc.y,
           laneOffset
         };
       }
@@ -1618,8 +1628,8 @@
         return {
           x: -margin - edgePadX,
           y,
-          targetX: W + margin + edgePadX,
-          targetY: y,
+          targetX: cc.x,
+          targetY: cc.y,
           laneOffset
         };
       }
@@ -1627,8 +1637,8 @@
       return {
         x: W + margin + edgePadX,
         y,
-        targetX: -margin - edgePadX,
-        targetY: y,
+        targetX: cc.x,
+        targetY: cc.y,
         laneOffset
       };
     }
@@ -2185,8 +2195,8 @@
             x: spawn.x,
             y: spawn.y,
             angle: Math.atan2(dy, dx),
-            length: s(34),
-            thickness: s(9),
+            length: s(72),
+            thickness: s(8),
             alive: true,
             parried: false,
             spawnDir,
@@ -2196,31 +2206,6 @@
         }
       }
       return false;
-    }
-
-    function isInParryZone(ax, ay, atk) {
-      const cc = getCombatCenter();
-      const pr = getParryRadius();
-      const bodyR = getBodyHitRadius();
-      const dx = Math.abs(ax - cc.x);
-      const dy = Math.abs(ay - cc.y);
-
-      if (atk?.spawnDir === SlashDir.UP) {
-        const upPr = pr * UP_PARRY_ZONE_SCALE;
-        return dx <= upPr * 0.42
-          && ay >= cc.y - upPr
-          && ay <= cc.y + s(12) * UP_PARRY_ZONE_SCALE
-          && dy > bodyR;
-      }
-      if (atk?.spawnDir === SlashDir.LEFT) {
-        return dy <= pr * 0.42 && ax >= cc.x - pr && ax <= cc.x + s(12) && dx > bodyR;
-      }
-      if (atk?.spawnDir === SlashDir.RIGHT) {
-        return dy <= pr * 0.42 && ax <= cc.x + pr && ax >= cc.x - s(12) && dx > bodyR;
-      }
-
-      const dist = Math.hypot(ax - cc.x, ay - cc.y);
-      return dist <= getParryRadiusAt(ax, ay) && dist > bodyR;
     }
 
     function canParryAttack(atk, dt) {
