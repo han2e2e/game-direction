@@ -1185,13 +1185,10 @@
     const ARROW_SPEED_MIN = 720;
     const ARROW_SPEED_MAX = 1320;
     const ARROW_SPEED_SCALE = 0.7;
-    const MAX_ON_SCREEN_ARROWS = 3;
+    const MAX_ON_SCREEN_ARROWS = 1;
     const UP_PARRY_ZONE_SCALE = 1.2;
     const ARROW_LANE_OFFSETS = [-88, -44, 44, 88];
     const MIN_ARROW_SPACING = 108;
-    const FAKE_COMBO_THRESHOLD = 40;
-    const FAKE_SPAWN_CHANCE = 0.36;
-    const FAKE_BONUS_CHANCE = 0.22;
 
     let W, H, cx, cy;
     let gameScale = 1;
@@ -1213,7 +1210,6 @@
     let screenFlash = 0;
     let spawnTimer = 0;
     let spawnInterval = 2;
-    let spawnBurstLeft = 0;
     let difficulty = 1;
     let lastTime = 0;
     let gameTime = 0;
@@ -1474,17 +1470,21 @@
     }
 
     function arrowHitsPlayer(atk) {
-      if (atk.fake) return false;
       const cc = getCombatCenter();
-      return Math.hypot(atk.x - cc.x, atk.y - cc.y) <= getBodyHitRadius();
-    }
+      const bodyR = getBodyHitRadius();
+      const dx = Math.abs(atk.x - cc.x);
+      const dy = Math.abs(atk.y - cc.y);
 
-    function isFakeEligible() {
-      return combo >= FAKE_COMBO_THRESHOLD;
-    }
-
-    function rollFakeArrow() {
-      return isFakeEligible() && Math.random() < FAKE_SPAWN_CHANCE;
+      if (atk.spawnDir === SlashDir.UP) {
+        return dx <= bodyR * 2 && atk.y >= cc.y - bodyR && atk.y <= cc.y + bodyR * 2.5;
+      }
+      if (atk.spawnDir === SlashDir.LEFT) {
+        return dy <= bodyR * 2 && atk.x >= cc.x - bodyR && atk.x <= cc.x + bodyR * 2.5;
+      }
+      if (atk.spawnDir === SlashDir.RIGHT) {
+        return dy <= bodyR * 2 && atk.x <= cc.x + bodyR && atk.x >= cc.x - bodyR * 2.5;
+      }
+      return Math.hypot(atk.x - cc.x, atk.y - cc.y) <= bodyR;
     }
 
     function tryLockLandscape() {
@@ -1567,34 +1567,21 @@
 
     function scheduleNextSpawn() {
       const d = getEffectiveDifficulty();
-      const tension = Math.min(1,
-        (combo / FAKE_COMBO_THRESHOLD) * 0.5
-        + (gameTime / 100) * 0.35
-        + ((d - 1) / (DIFFICULTY_MAX - 1)) * 0.2
-      );
+      let minGap, maxGap;
 
-      if (spawnBurstLeft > 0) {
-        spawnBurstLeft--;
-        spawnInterval = 0.12 + Math.random() * 0.34;
-        return;
+      if (d < 1.8) {
+        minGap = 0.05; maxGap = 0.12;
+      } else if (d < 2.8) {
+        minGap = 0.03; maxGap = 0.09;
+      } else if (d < 3.8) {
+        minGap = 0.02; maxGap = 0.07;
+      } else if (d < 4.5) {
+        minGap = 0.015; maxGap = 0.05;
+      } else {
+        minGap = 0.01; maxGap = 0.035;
       }
 
-      const roll = Math.random();
-      const burstChance = 0.16 + tension * 0.24;
-
-      if (roll < burstChance) {
-        spawnBurstLeft = 1 + Math.floor(Math.random() * 4);
-        spawnInterval = 0.14 + Math.random() * 0.3;
-        return;
-      }
-
-      if (roll < 0.5) {
-        spawnInterval = 0.42 + Math.random() * 0.78;
-        return;
-      }
-
-      const longMin = 0.85 + (1 - tension) * 0.55;
-      spawnInterval = longMin + Math.random() * (3.0 - longMin);
+      spawnInterval = minGap + Math.random() * (maxGap - minGap);
     }
 
     function getAliveArrowCount() {
@@ -1620,8 +1607,8 @@
         return {
           x,
           y: -margin,
-          targetX: cc.x,
-          targetY: cc.y,
+          targetX: x,
+          targetY: H + margin,
           laneOffset
         };
       }
@@ -1630,8 +1617,8 @@
         return {
           x: -margin - edgePadX,
           y,
-          targetX: cc.x,
-          targetY: cc.y,
+          targetX: W + margin + edgePadX,
+          targetY: y,
           laneOffset
         };
       }
@@ -1639,8 +1626,8 @@
       return {
         x: W + margin + edgePadX,
         y,
-        targetX: cc.x,
-        targetY: cc.y,
+        targetX: -margin - edgePadX,
+        targetY: y,
         laneOffset
       };
     }
@@ -1959,7 +1946,6 @@
       parryHitThisSwing = false;
       screenFlash = 0;
       spawnTimer = 0;
-      spawnBurstLeft = 0;
       scheduleNextSpawn();
       difficulty = 1;
       gameTime = 0;
@@ -2154,10 +2140,6 @@
       if (countdownVal > 0) return;
       if (getAliveArrowCount() >= MAX_ON_SCREEN_ARROWS) return;
       _spawnSingleArrow();
-      if (isFakeEligible() && Math.random() < FAKE_BONUS_CHANCE
-          && getAliveArrowCount() < MAX_ON_SCREEN_ARROWS) {
-        _spawnSingleArrow(true);
-      }
     }
 
     function getArrowFlightVector(atk) {
@@ -2176,12 +2158,11 @@
       };
     }
 
-    function _spawnSingleArrow(forceFake) {
+    function _spawnSingleArrow() {
       const margin = s(30);
       const edgePadX = letterboxPadX / displayScale;
       const cc = getCombatCenter();
       const dirs = getSpawnDirsByPriority();
-      const isFake = forceFake === true || rollFakeArrow();
 
       for (const spawnDir of dirs) {
         for (const laneOffset of shuffleLanes()) {
@@ -2203,13 +2184,11 @@
             x: spawn.x,
             y: spawn.y,
             angle: Math.atan2(dy, dx),
-            length: s(72),
-            thickness: s(8),
+            length: s(34),
+            thickness: s(9),
             alive: true,
             parried: false,
-            fake: isFake,
             spawnDir,
-            approachDir: spawnDir,
             laneOffset
           });
           return true;
@@ -2220,23 +2199,23 @@
 
     function isInParryZone(ax, ay, atk) {
       const cc = getCombatCenter();
-      const bodyR = getBodyHitRadius();
       const pr = getParryRadius();
-      const dir = atk?.approachDir || atk?.spawnDir;
+      const bodyR = getBodyHitRadius();
+      const dx = Math.abs(ax - cc.x);
+      const dy = Math.abs(ay - cc.y);
 
-      if (dir === SlashDir.UP) {
+      if (atk?.spawnDir === SlashDir.UP) {
         const upPr = pr * UP_PARRY_ZONE_SCALE;
-        const dx = Math.abs(ax - cc.x);
-        const above = cc.y - ay;
-        return dx <= upPr * 0.55 && above > bodyR && above <= upPr;
+        return dx <= upPr * 0.42
+          && ay >= cc.y - upPr
+          && ay <= cc.y + s(12) * UP_PARRY_ZONE_SCALE
+          && dy > bodyR;
       }
-      if (dir === SlashDir.LEFT) {
-        const leftGap = cc.x - ax;
-        return Math.abs(ay - cc.y) <= pr * 0.55 && leftGap > bodyR && leftGap <= pr;
+      if (atk?.spawnDir === SlashDir.LEFT) {
+        return dy <= pr * 0.42 && ax >= cc.x - pr && ax <= cc.x + s(12) && dx > bodyR;
       }
-      if (dir === SlashDir.RIGHT) {
-        const rightGap = ax - cc.x;
-        return Math.abs(ay - cc.y) <= pr * 0.55 && rightGap > bodyR && rightGap <= pr;
+      if (atk?.spawnDir === SlashDir.RIGHT) {
+        return dy <= pr * 0.42 && ax <= cc.x + pr && ax >= cc.x - s(12) && dx > bodyR;
       }
 
       const dist = Math.hypot(ax - cc.x, ay - cc.y);
@@ -2380,18 +2359,7 @@
       updateParryHint();
     }
 
-    function punishFakeParry(attack) {
-      attack.alive = false;
-      attack.parried = false;
-      screenFlash = 0.06;
-      spawnSparkParticles(attack.x, attack.y, attack.angle + Math.PI);
-    }
-
     function perfectParry(attack) {
-      if (attack.fake) {
-        punishFakeParry(attack);
-        return;
-      }
       spawnBrokenStick(attack);
       attack.alive = false;
       attack.parried = true;
@@ -2672,14 +2640,8 @@
       ctx.rotate(atk.angle);
 
       const halfW = atk.thickness * 0.78;
-      if (atk.fake) {
-        ctx.globalAlpha = 0.42;
-        ctx.fillStyle = '#bdbdbd';
-        ctx.strokeStyle = '#9e9e9e';
-      } else {
-        ctx.fillStyle = '#000';
-        ctx.strokeStyle = '#000';
-      }
+      ctx.fillStyle = '#000';
+      ctx.strokeStyle = '#000';
       ctx.lineWidth = Math.max(1.2, atk.thickness * 0.28);
       ctx.lineJoin = 'round';
       ctx.beginPath();
