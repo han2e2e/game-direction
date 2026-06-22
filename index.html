@@ -677,11 +677,16 @@
             <div class="hud-blocks" id="hp-blocks">
               <span class="hud-block"></span>
               <span class="hud-block"></span>
+              <span class="hud-block"></span>
+              <span class="hud-block"></span>
+              <span class="hud-block"></span>
             </div>
           </div>
           <div class="hud-stat stamina-row" id="stamina-wrap">
             <div class="hud-label">STAMINA</div>
             <div class="hud-blocks" id="stamina-blocks">
+              <span class="hud-block"></span>
+              <span class="hud-block"></span>
               <span class="hud-block"></span>
               <span class="hud-block"></span>
               <span class="hud-block"></span>
@@ -1159,7 +1164,7 @@
       UP: 'up'
     };
 
-    const PARRY_RADIUS = 130;
+    const PARRY_RADIUS = 160;
     const PARRY_UPPER_RADIUS_MULT = 1.1;
     const REF_W = 1600;
     const REF_H = 900;
@@ -1172,18 +1177,18 @@
     const ARROW_TRAVEL_FAST_MAX = 0.48;
     const COUNT_FAST_THRESHOLD = 40;
     const COMBO_SOFT_CAP = 40;
-    const PLAYER_HIT_RADIUS = 14;
+    const PLAYER_HIT_RADIUS = 38;
     const GUIDE_SHOW_TIME = 3;
     const ATTACKS_START_TIME = GUIDE_SHOW_TIME;
-    const MAX_HP = 2;
+    const MAX_HP = 5;
     const HIT_DAMAGE = 1;
-    const MAX_STAMINA = 4;
-    const STAMINA_REGEN_INTERVAL = 1.8;
+    const MAX_STAMINA = 6;
+    const STAMINA_REGEN_INTERVAL = 1.2;
     const STAMINA_REGEN_AMOUNT = 1;
     const STAMINA_SWING_COST = 1;
     const SPECIAL_COMBO_REQ = 20;
-    const ARROW_SPEED_MIN = 720;
-    const ARROW_SPEED_MAX = 1320;
+    const ARROW_SPEED_MIN = 480;
+    const ARROW_SPEED_MAX = 860;
     const ARROW_SPEED_SCALE = 0.82;
     const MAX_ON_SCREEN_ARROWS = 1;
     const UP_PARRY_ZONE_SCALE = 1.2;
@@ -1470,8 +1475,7 @@
     }
 
     function arrowHitsPlayer(atk) {
-      const cc = getCombatCenter();
-      return Math.hypot(atk.x - cc.x, atk.y - cc.y) <= getBodyHitRadius();
+      return Math.hypot(atk.x - player.x, atk.y - player.y) <= getBodyHitRadius();
     }
 
     function tryLockLandscape() {
@@ -1554,21 +1558,9 @@
 
     function scheduleNextSpawn() {
       const d = getEffectiveDifficulty();
-      let minGap, maxGap;
-
-      if (d < 1.8) {
-        minGap = 0.02; maxGap = 0.07;
-      } else if (d < 2.8) {
-        minGap = 0.015; maxGap = 0.055;
-      } else if (d < 3.8) {
-        minGap = 0.01; maxGap = 0.04;
-      } else if (d < 4.5) {
-        minGap = 0.008; maxGap = 0.03;
-      } else {
-        minGap = 0.005; maxGap = 0.022;
-      }
-
-      spawnInterval = minGap + Math.random() * (maxGap - minGap);
+      // d: 1~5, 초기엔 0.55초 간격 → 최고 난이도 0.18초
+      const t = (d - 1) / (DIFFICULTY_MAX - 1);
+      spawnInterval = 0.55 - t * 0.37;
     }
 
     function getAliveArrowCount() {
@@ -1590,8 +1582,8 @@
         return {
           x,
           y: -margin,
-          targetX: cc.x,
-          targetY: cc.y,
+          targetX: player.x,
+          targetY: player.y,
           laneOffset
         };
       }
@@ -1600,8 +1592,8 @@
         return {
           x: -margin - edgePadX,
           y,
-          targetX: cc.x,
-          targetY: cc.y,
+          targetX: player.x,
+          targetY: player.y,
           laneOffset
         };
       }
@@ -1609,8 +1601,8 @@
       return {
         x: W + margin + edgePadX,
         y,
-        targetX: cc.x,
-        targetY: cc.y,
+        targetX: player.x,
+        targetY: player.y,
         laneOffset
       };
     }
@@ -1635,16 +1627,13 @@
     function getArrowSpeed() {
       const d = getEffectiveDifficulty();
       const dT = (d - 1) / (DIFFICULTY_MAX - 1);
-      const timeT = Math.min(1, gameTime / 75);
-      const comboT = Math.min(1, combo / 20);
-      const t = Math.min(1, dT * 0.45 + timeT * 0.4 + comboT * 0.15);
-      const base = ARROW_SPEED_MIN + (ARROW_SPEED_MAX - ARROW_SPEED_MIN) * t;
-      return base * ARROW_SPEED_SCALE;
+      const base = 400 + (820 - 400) * dT;
+      return base;
     }
 
     function queueNextArrowSoon() {
       if (getAliveArrowCount() >= MAX_ON_SCREEN_ARROWS) return;
-      spawnTimer = spawnInterval * 0.35;
+      spawnTimer = spawnInterval * 0.15;
     }
 
     function showGameOverPanel() {
@@ -2180,27 +2169,9 @@
 
     function isInParryZone(ax, ay, atk) {
       const cc = getCombatCenter();
-      const pr = getParryRadius();
-      const bodyR = getBodyHitRadius();
-      const dx = Math.abs(ax - cc.x);
-      const dy = Math.abs(ay - cc.y);
-
-      if (atk?.spawnDir === SlashDir.UP) {
-        const upPr = pr * UP_PARRY_ZONE_SCALE;
-        return dx <= upPr * 0.42
-          && ay >= cc.y - upPr
-          && ay <= cc.y + s(12) * UP_PARRY_ZONE_SCALE
-          && dy > bodyR;
-      }
-      if (atk?.spawnDir === SlashDir.LEFT) {
-        return dy <= pr * 0.42 && ax >= cc.x - pr && ax <= cc.x + s(12) && dx > bodyR;
-      }
-      if (atk?.spawnDir === SlashDir.RIGHT) {
-        return dy <= pr * 0.42 && ax <= cc.x + pr && ax >= cc.x - s(12) && dx > bodyR;
-      }
-
+      const pr = getParryRadius() * 1.5;
       const dist = Math.hypot(ax - cc.x, ay - cc.y);
-      return dist <= getParryRadiusAt(ax, ay) && dist > bodyR;
+      return dist <= pr && dist > getBodyHitRadius();
     }
 
     function canParryAttack(atk, dt) {
@@ -2698,14 +2669,13 @@
 
       gameTime += dt;
 
-      // 0~60초: 천천히 (1→2.5)
-      // 60~120초: 가속 (2.5→4)
-      // 120초~: 마무리 (4→5)
-      const timeRate = gameTime < 45
-        ? 0.045
-        : gameTime < 90
-          ? 0.065
-          : 0.035;
+      const timeRate = gameTime < 15
+        ? 0.02
+        : gameTime < 45
+          ? 0.055
+          : gameTime < 90
+            ? 0.075
+            : 0.025;
       difficulty = Math.min(DIFFICULTY_MAX, difficulty + dt * timeRate);
 
       if (parryTimer > 0) {
