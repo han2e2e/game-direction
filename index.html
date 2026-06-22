@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>방향 베기</title>
-  <meta name="description" content="← ↑ → 방향키로 날아오는 화살 방향에 맞게 베는 스킬 게임입니다.">
+  <title>화살베기 2</title>
+  <meta name="description" content="← ↑ → 화살 방향에 맞게 베는 스킬 게임입니다.">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="방향 베기">
-  <meta property="og:title" content="방향 베기">
-  <meta property="og:description" content="← ↑ → 방향키로 날아오는 화살 방향에 맞게 베는 스킬 게임입니다.">
+  <meta property="og:site_name" content="화살베기 2">
+  <meta property="og:title" content="화살베기 2">
+  <meta property="og:description" content="← ↑ → 화살 방향에 맞게 베는 스킬 게임입니다.">
   <meta property="og:url" content="https://directionslash.vercel.app/">
   <meta property="og:image" content="https://directionslash.vercel.app/og-preview.png">
-  <meta property="og:image:alt" content="방향 베기">
+  <meta property="og:image:alt" content="화살베기 2">
   <meta property="og:locale" content="ko_KR">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="방향 베기">
-  <meta name="twitter:description" content="← ↑ → 방향키로 날아오는 화살 방향에 맞게 베는 스킬 게임입니다.">
+  <meta name="twitter:title" content="화살베기 2">
+  <meta name="twitter:description" content="← ↑ → 화살 방향에 맞게 베는 스킬 게임입니다.">
   <meta name="twitter:image" content="https://directionslash.vercel.app/og-preview.png">
-  <meta name="twitter:image:alt" content="방향 베기">
+  <meta name="twitter:image:alt" content="화살베기 2">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -254,15 +254,18 @@
         font-size: clamp(36px, 11vw, 72px);
       }
       #main-menu .menu-title-area {
-        width: auto;
-        height: auto;
+        width: 100%;
         min-height: 0;
+      }
+      #main-menu .menu-tagline {
+        font-size: clamp(15px, 3.6vw, 19px);
       }
       #main-menu .menu-btn {
         font-size: clamp(18px, 4.5vw, 28px);
       }
       .menu-stack {
         gap: 20px;
+        padding-top: min(16vh, 120px);
       }
       .ranking-inner {
         width: min(520px, 94vw);
@@ -383,45 +386,55 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: min(3vh, 28px);
+      justify-content: flex-start;
+      gap: min(8vh, 64px);
       width: 100%;
-      padding: 0 5vw;
+      max-width: 960px;
+      padding: min(20vh, 168px) 5vw 0;
       box-sizing: border-box;
-      margin: auto;
+      margin: 0 auto;
       flex-shrink: 0;
+      text-align: center;
     }
     #main-menu .menu-title-area {
-      width: min(66vw, 640px);
-      height: min(26vh, 260px);
+      width: 100%;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: clamp(10px, 1.8vh, 16px);
     }
     #main-menu .menu-title {
-      margin: 0;
+      margin: 0 auto;
       color: #111;
       font-size: min(22vh, 13vw, 96px);
       font-weight: 300;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       line-height: 1.05;
       text-align: center;
+      white-space: nowrap;
+      width: 100%;
     }
-    #main-menu .menu-subtitle {
-      margin: 0;
+    #main-menu .menu-tagline {
+      margin: 0 auto;
       color: #666;
-      font-size: clamp(13px, 2.8vw, 18px);
+      font-size: clamp(16px, 2.8vw, 21px);
       font-weight: 400;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       line-height: 1.5;
       text-align: center;
       opacity: 0.72;
+      white-space: nowrap;
+      pointer-events: none;
+      width: 100%;
     }
     #main-menu .menu-buttons {
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: clamp(16px, 2.5vh, 28px);
-      width: auto;
+      width: 100%;
     }
     #main-menu .menu-btn {
       width: auto;
@@ -435,9 +448,9 @@
       letter-spacing: clamp(3px, 0.8vw, 6px);
       cursor: pointer;
       padding: 6px 2px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      margin: 0 auto;
+      display: block;
+      text-align: center;
       opacity: 0.42;
       white-space: nowrap;
       transition: opacity 0.22s ease, letter-spacing 0.22s ease;
@@ -673,6 +686,7 @@
               <span class="hud-block"></span>
               <span class="hud-block"></span>
               <span class="hud-block"></span>
+              <span class="hud-block"></span>
             </div>
           </div>
         </div>
@@ -709,8 +723,8 @@
     <div id="main-menu">
       <div class="menu-stack">
         <div class="menu-title-area">
-          <h1 class="menu-title">방향 베기</h1>
-          <p class="menu-subtitle">← ↑ → 화살 방향에 맞게 베기 · PC 키보드 권장</p>
+          <h1 class="menu-title">화살베기 2</h1>
+          <p class="menu-tagline">← ↑ → 화살방향에 맞게 베기</p>
         </div>
         <div class="menu-buttons">
           <button class="menu-btn" id="btn-start" type="button">시작하기</button>
@@ -931,6 +945,36 @@
       osc.stop(now + 0.28);
     }
 
+    function playSpecialSound() {
+      const ctx = getAudioCtx();
+      const now = ctx.currentTime;
+
+      const boom = ctx.createOscillator();
+      boom.type = 'triangle';
+      boom.frequency.setValueAtTime(110, now);
+      boom.frequency.exponentialRampToValueAtTime(42, now + 0.45);
+      const boomGain = ctx.createGain();
+      boomGain.gain.setValueAtTime(0.55, now);
+      boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+      boom.connect(boomGain);
+      boomGain.connect(ctx.destination);
+      boom.start(now);
+      boom.stop(now + 0.5);
+
+      const sweep = ctx.createOscillator();
+      sweep.type = 'sawtooth';
+      sweep.frequency.setValueAtTime(880, now + 0.02);
+      sweep.frequency.exponentialRampToValueAtTime(180, now + 0.35);
+      const sweepGain = ctx.createGain();
+      sweepGain.gain.setValueAtTime(0.001, now);
+      sweepGain.gain.linearRampToValueAtTime(0.22, now + 0.04);
+      sweepGain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
+      sweep.connect(sweepGain);
+      sweepGain.connect(ctx.destination);
+      sweep.start(now + 0.02);
+      sweep.stop(now + 0.38);
+    }
+
     function startBGM() {
       if (bgmStarted) return;
       bgmStarted = true;
@@ -1121,8 +1165,8 @@
     const REF_W = 1600;
     const REF_H = 900;
     const PLAYER_FOOT_OFFSET = 90;
-    const PARRY_WINDOW = 0.14;
-    const PARRY_WINDOW_MOBILE = 0.18;
+    const PARRY_WINDOW = 0.10;
+    const PARRY_WINDOW_MOBILE = 0.13;
     const DIFFICULTY_MAX = 5;  // 기존과 동일, 확인용
     const ARROW_TRAVEL_MIN = 0.42;
     const ARROW_TRAVEL_MAX = 0.68;
@@ -1134,10 +1178,18 @@
     const ATTACKS_START_TIME = GUIDE_SHOW_TIME;
     const MAX_HP = 2;
     const HIT_DAMAGE = 1;
-    const MAX_STAMINA = 3;
-    const STAMINA_REGEN_INTERVAL = 3;
+    const MAX_STAMINA = 4;
+    const STAMINA_REGEN_INTERVAL = 1.8;
     const STAMINA_REGEN_AMOUNT = 1;
     const STAMINA_SWING_COST = 1;
+    const SPECIAL_COMBO_REQ = 20;
+    const ARROW_SPEED_MIN = 720;
+    const ARROW_SPEED_MAX = 1320;
+    const ARROW_SPEED_SCALE = 0.7;
+    const MAX_ON_SCREEN_ARROWS = 3;
+    const UP_PARRY_ZONE_SCALE = 1.2;
+    const ARROW_LANE_OFFSETS = [-88, -44, 44, 88];
+    const MIN_ARROW_SPACING = 108;
 
     let W, H, cx, cy;
     let gameScale = 1;
@@ -1155,6 +1207,7 @@
     let parryActive = false;
     let parryTimer = 0;
     let parryInputDir = null;
+    let parryHitThisSwing = false;
     let screenFlash = 0;
     let spawnTimer = 0;
     let spawnInterval = 2;
@@ -1164,8 +1217,10 @@
     let countdownVal = 0;       // 3,2,1,0 — 0이면 표시 안 함
     let countdownTimer = 0;
     let comboPop = 0;
+    let specialFxTimer = 0;
     let touchStartX = 0;
     let touchStartY = 0;
+    let comboAtLastSpecial = 0;
 
     let charState = 'idle';
     let charTimer = 0;
@@ -1189,6 +1244,8 @@
     const COMBO_POP_DURATION = 0.38;
     const COMBO_SIZE_SCALE = 0.7;
     const COMBO_SCREEN_CENTER_Y_RATIO = 0.34;
+    const COMBO_SIDE_X_LEFT = 0.11;
+    const COMBO_SIDE_X_RIGHT = 0.89;
     const COMBO_COLOR = '#111';
 
     const attacks = [];
@@ -1279,7 +1336,8 @@
 
     function getComboAnchor() {
       return {
-        x: W * 0.5,
+        leftX: W * COMBO_SIDE_X_LEFT,
+        rightX: W * COMBO_SIDE_X_RIGHT,
         stackCenterY: H * COMBO_SCREEN_CENTER_Y_RATIO
       };
     }
@@ -1371,9 +1429,24 @@
 
     function updateParryHint() {
       if (!hudParryHintEl) return;
+      if (isSpecialReady()) {
+        hudParryHintEl.textContent = isCoarseMobile()
+          ? 'SWIPE ↓ — SPECIAL'
+          : '↓ — SPECIAL';
+        return;
+      }
       hudParryHintEl.textContent = isCoarseMobile()
         ? 'SWIPE ← ↑ → — SLASH'
         : '← ↑ → — SLASH';
+    }
+
+    function getSpecialGaugeFill() {
+      const progress = combo - comboAtLastSpecial;
+      return Math.min(1, Math.max(0, progress / SPECIAL_COMBO_REQ));
+    }
+
+    function isSpecialReady() {
+      return combo - comboAtLastSpecial >= SPECIAL_COMBO_REQ;
     }
 
     function keyCodeToSlashDir(code) {
@@ -1386,11 +1459,33 @@
     function slashDirToPattern(dir) {
       if (dir === SlashDir.LEFT) return 'diag_L';
       if (dir === SlashDir.RIGHT) return 'diag_R';
-      return 'up';
+      return 'down';
     }
 
-    function directionsMatch(parryDir, attackDir) {
-      return parryDir === attackDir;
+    function getApproachAngle(atk) {
+      return Math.atan2(atk.targetY - atk.startY, atk.targetX - atk.startX);
+    }
+
+    function directionsMatch(parryDir, atk) {
+      return parryDir === atk.spawnDir;
+    }
+
+    function arrowHitsPlayer(atk) {
+      const cc = getCombatCenter();
+      const bodyR = getBodyHitRadius();
+      const dx = Math.abs(atk.x - cc.x);
+      const dy = Math.abs(atk.y - cc.y);
+
+      if (atk.spawnDir === SlashDir.UP) {
+        return dx <= bodyR * 2 && atk.y >= cc.y - bodyR && atk.y <= cc.y + bodyR * 2.5;
+      }
+      if (atk.spawnDir === SlashDir.LEFT) {
+        return dy <= bodyR * 2 && atk.x >= cc.x - bodyR && atk.x <= cc.x + bodyR * 2.5;
+      }
+      if (atk.spawnDir === SlashDir.RIGHT) {
+        return dy <= bodyR * 2 && atk.x <= cc.x + bodyR && atk.x >= cc.x - bodyR * 2.5;
+      }
+      return Math.hypot(atk.x - cc.x, atk.y - cc.y) <= bodyR;
     }
 
     function tryLockLandscape() {
@@ -1476,18 +1571,98 @@
       let minGap, maxGap;
 
       if (d < 1.8) {
-        minGap = 2.2; maxGap = 4.0;
+        minGap = 0.05; maxGap = 0.12;
       } else if (d < 2.8) {
-        minGap = 1.6; maxGap = 3.0;
+        minGap = 0.03; maxGap = 0.09;
       } else if (d < 3.8) {
-        minGap = 1.1; maxGap = 2.2;
+        minGap = 0.02; maxGap = 0.07;
       } else if (d < 4.5) {
-        minGap = 0.75; maxGap = 1.5;
+        minGap = 0.015; maxGap = 0.05;
       } else {
-        minGap = 0.55; maxGap = 1.0;
+        minGap = 0.01; maxGap = 0.035;
       }
 
       spawnInterval = minGap + Math.random() * (maxGap - minGap);
+    }
+
+    function getAliveArrowCount() {
+      return attacks.filter(a => a.alive).length;
+    }
+
+    function shuffleLanes() {
+      return ARROW_LANE_OFFSETS.map(v => s(v)).sort(() => Math.random() - 0.5);
+    }
+
+    function getSpawnDirsByPriority() {
+      const dirs = [SlashDir.LEFT, SlashDir.RIGHT, SlashDir.UP];
+      return dirs.sort((a, b) => {
+        const aCount = attacks.filter(atk => atk.alive && atk.spawnDir === a).length;
+        const bCount = attacks.filter(atk => atk.alive && atk.spawnDir === b).length;
+        return aCount - bCount;
+      });
+    }
+
+    function buildArrowSpawn(spawnDir, laneOffset, cc, margin, edgePadX) {
+      if (spawnDir === SlashDir.UP) {
+        const x = cc.x + laneOffset;
+        return {
+          x,
+          y: -margin,
+          targetX: x,
+          targetY: H + margin,
+          laneOffset
+        };
+      }
+      if (spawnDir === SlashDir.LEFT) {
+        const y = cc.y + laneOffset;
+        return {
+          x: -margin - edgePadX,
+          y,
+          targetX: W + margin + edgePadX,
+          targetY: y,
+          laneOffset
+        };
+      }
+      const y = cc.y + laneOffset;
+      return {
+        x: W + margin + edgePadX,
+        y,
+        targetX: -margin - edgePadX,
+        targetY: y,
+        laneOffset
+      };
+    }
+
+    function isSpawnPositionClear(spawnDir, laneOffset, sx, sy) {
+      const minSep = s(MIN_ARROW_SPACING);
+
+      for (const atk of attacks) {
+        if (!atk.alive) continue;
+        const pos = getArrowPosition(atk, atk.elapsed);
+
+        if (Math.hypot(pos.x - sx, pos.y - sy) < minSep) return false;
+
+        if (atk.spawnDir === spawnDir && Math.abs(atk.laneOffset - laneOffset) < s(6)) {
+          const headGap = Math.hypot(pos.x - sx, pos.y - sy);
+          if (headGap < minSep * 1.15) return false;
+        }
+      }
+      return true;
+    }
+
+    function getArrowSpeed() {
+      const d = getEffectiveDifficulty();
+      const dT = (d - 1) / (DIFFICULTY_MAX - 1);
+      const timeT = Math.min(1, gameTime / 75);
+      const comboT = Math.min(1, combo / 20);
+      const t = Math.min(1, dT * 0.45 + timeT * 0.4 + comboT * 0.15);
+      const base = ARROW_SPEED_MIN + (ARROW_SPEED_MAX - ARROW_SPEED_MIN) * t;
+      return base * ARROW_SPEED_SCALE;
+    }
+
+    function queueNextArrowSoon() {
+      if (getAliveArrowCount() >= MAX_ON_SCREEN_ARROWS) return;
+      spawnTimer = spawnInterval;
     }
 
     function showGameOverPanel() {
@@ -1760,6 +1935,7 @@
       stamina = MAX_STAMINA;
       staminaRegenTimer = 0;
       combo = 0;
+      comboAtLastSpecial = 0;
       maxCombo = 0;
       cutCount = 0;
       currentCount = 0;
@@ -1768,6 +1944,7 @@
       parryActive = false;
       parryTimer = 0;
       parryInputDir = null;
+      parryHitThisSwing = false;
       screenFlash = 0;
       spawnTimer = 0;
       scheduleNextSpawn();
@@ -1776,6 +1953,7 @@
       countdownVal = 3;
       countdownTimer = 0;
       comboPop = 0;
+      specialFxTimer = 0;
       gameOver = false;
       attacks.length = 0;
       particles.length = 0;
@@ -1876,7 +2054,6 @@
       const digits = String(combo);
       const pop = getComboPopScale();
       const anchor = getComboAnchor();
-      const centerX = anchor.x;
       let digitH = Math.min(W * 0.30, H * 0.32) * COMBO_SIZE_SCALE;
       if (digits.length >= 2) {
         digitH *= COMBO_MULTI_SCALE[Math.min(digits.length, 4)] || COMBO_MULTI_SCALE[4];
@@ -1886,7 +2063,7 @@
       let digitGap = getComboDigitGap(digits.length, digitH);
       let totalDigitW = measureDigitRow(ctx, digits, digitFontSize, digitGap);
 
-      const maxRowW = W * (digits.length >= 3 ? 0.88 : 0.92);
+      const maxRowW = W * 0.24;
       if (totalDigitW > maxRowW) {
         const shrink = maxRowW / totalDigitW;
         digitFontSize *= shrink;
@@ -1911,14 +2088,16 @@
       const comboBaseline = stackBottomY - labelFontSize * 0.12;
       const digitBaseline = stackBottomY - labelH - stackGap - digitFontSize * 0.12;
 
-      ctx.save();
-      ctx.translate(centerX, blockCenterY);
-      ctx.scale(pop, pop);
-      ctx.translate(-centerX, -blockCenterY);
+      for (const centerX of [anchor.leftX, anchor.rightX]) {
+        ctx.save();
+        ctx.translate(centerX, blockCenterY);
+        ctx.scale(pop, pop);
+        ctx.translate(-centerX, -blockCenterY);
 
-      drawDigitRow(ctx, digits, centerX - totalDigitW * 0.5, digitBaseline, digitFontSize, digitGap, COMBO_COLOR);
-      drawTrackedText(ctx, 'COMBO', centerX, comboBaseline, labelFontSize, UI_LABEL_TRACK * (labelFontSize / UI_LABEL_PX), COMBO_COLOR);
-      ctx.restore();
+        drawDigitRow(ctx, digits, centerX - totalDigitW * 0.5, digitBaseline, digitFontSize, digitGap, COMBO_COLOR);
+        drawTrackedText(ctx, 'COMBO', centerX, comboBaseline, labelFontSize, labelTracking, COMBO_COLOR);
+        ctx.restore();
+      }
     }
 
     function loadCharImages() {
@@ -1960,47 +2139,8 @@
 
     function spawnAttack() {
       if (countdownVal > 0) return;
-      const aliveCount = attacks.filter(a => a.alive).length;
-      if (aliveCount > 0) {
-        spawnTimer = spawnInterval * 0.5;
-        return;
-      }
+      if (getAliveArrowCount() >= MAX_ON_SCREEN_ARROWS) return;
       _spawnSingleArrow();
-    }
-
-    function getArrowTravelTime() {
-      const d = getEffectiveDifficulty();
-
-      if (d < 1.8) {
-        // 초반 (~30초): 느린 화살 주력, 가끔 빠른 화살로 긴장감
-        const isFast = Math.random() < 0.20;
-        return isFast
-          ? 0.58 + Math.random() * 0.12   // 빠른 (가끔)
-          : (1.20 + Math.random() * 0.40) / 1.3;  // 느린 (주력) — 30% 빠름
-      }
-
-      if (d < 2.8) {
-        // 중초반 (~60초): 느린/보통/빠른 골고루
-        const r = Math.random();
-        if (r < 0.25) return 0.52 + Math.random() * 0.10; // 빠른
-        if (r < 0.60) return 0.78 + Math.random() * 0.18; // 보통
-        return (1.00 + Math.random() * 0.30) / 1.3;        // 느린 — 30% 빠름
-      }
-
-      if (d < 3.8) {
-        // 중반 (~100초): 보통~빠른 위주
-        const r = Math.random();
-        if (r < 0.45) return 0.46 + Math.random() * 0.10; // 빠른
-        return 0.68 + Math.random() * 0.16;                // 보통
-      }
-
-      if (d < 4.5) {
-        // 후반 (~130초): 빠른 위주
-        return 0.40 + Math.random() * 0.10;
-      }
-
-      // 최종 (~2분+): 외나무다리 최고속
-      return 0.34 + Math.random() * 0.08;
     }
 
     function getArrowFlightVector(atk) {
@@ -2022,76 +2162,71 @@
     function _spawnSingleArrow() {
       const margin = s(30);
       const edgePadX = letterboxPadX / displayScale;
+      const cc = getCombatCenter();
+      const dirs = getSpawnDirsByPriority();
 
-      // 3방향: 왼쪽 / 오른쪽 / 위쪽
-      // 위쪽 25%, 왼쪽 37.5%, 오른쪽 37.5%
-      const r = Math.random();
-      let x, y;
-      let spawnDir;
+      for (const spawnDir of dirs) {
+        for (const laneOffset of shuffleLanes()) {
+          const spawn = buildArrowSpawn(spawnDir, laneOffset, cc, margin, edgePadX);
+          if (!isSpawnPositionClear(spawnDir, laneOffset, spawn.x, spawn.y)) continue;
 
-      if (r < 0.25) {
-        spawnDir = SlashDir.UP;
-        x = W * 0.2 + Math.random() * W * 0.6;
-        y = -margin;
-      } else if (r < 0.625) {
-        spawnDir = SlashDir.LEFT;
-        x = -margin - edgePadX;
-        y = margin + Math.random() * (H * 0.62);
-      } else {
-        spawnDir = SlashDir.RIGHT;
-        x = W + margin + edgePadX;
-        y = margin + Math.random() * (H * 0.62);
+          const dx = spawn.targetX - spawn.x;
+          const dy = spawn.targetY - spawn.y;
+          const dist = Math.hypot(dx, dy) || 1;
+          const travelTime = dist / getArrowSpeed();
+
+          attacks.push({
+            startX: spawn.x,
+            startY: spawn.y,
+            targetX: spawn.targetX,
+            targetY: spawn.targetY,
+            travelTime,
+            elapsed: 0,
+            x: spawn.x,
+            y: spawn.y,
+            angle: Math.atan2(dy, dx),
+            length: s(34),
+            thickness: s(9),
+            alive: true,
+            parried: false,
+            spawnDir,
+            laneOffset
+          });
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function isInParryZone(ax, ay, atk) {
+      const cc = getCombatCenter();
+      const pr = getParryRadius();
+      const bodyR = getBodyHitRadius();
+      const dx = Math.abs(ax - cc.x);
+      const dy = Math.abs(ay - cc.y);
+
+      if (atk?.spawnDir === SlashDir.UP) {
+        const upPr = pr * UP_PARRY_ZONE_SCALE;
+        return dx <= upPr * 0.42
+          && ay >= cc.y - upPr
+          && ay <= cc.y + s(12) * UP_PARRY_ZONE_SCALE
+          && dy > bodyR;
+      }
+      if (atk?.spawnDir === SlashDir.LEFT) {
+        return dy <= pr * 0.42 && ax >= cc.x - pr && ax <= cc.x + s(12) && dx > bodyR;
+      }
+      if (atk?.spawnDir === SlashDir.RIGHT) {
+        return dy <= pr * 0.42 && ax <= cc.x + pr && ax >= cc.x - s(12) && dx > bodyR;
       }
 
-      const cc = getCombatCenter();
-      const dx = cc.x - x;
-      const dy = cc.y - y;
-      const travelTime = getArrowTravelTime();
-
-      attacks.push({
-        startX: x,
-        startY: y,
-        targetX: cc.x,
-        targetY: cc.y,
-        travelTime,
-        elapsed: 0,
-        x, y,
-        angle: Math.atan2(dy, dx),
-        length: s(88),
-        thickness: s(8),
-        alive: true,
-        parried: false,
-        spawnDir
-      });
-    }
-
-    function isInParryArc(ax, ay) {
-      const cc = getCombatCenter();
-      const angle = Math.atan2(ay - cc.y, ax - cc.x);
-      return angle >= -Math.PI && angle <= 0;
-    }
-
-    function isInParryZone(ax, ay) {
-      const cc = getCombatCenter();
       const dist = Math.hypot(ax - cc.x, ay - cc.y);
-      const parryRadius = getParryRadiusAt(ax, ay);
-      return dist <= parryRadius && dist > getBodyHitRadius() && isInParryArc(ax, ay);
+      return dist <= getParryRadiusAt(ax, ay) && dist > bodyR;
     }
 
     function canParryAttack(atk, dt) {
-      if (isInParryZone(atk.x, atk.y)) return true;
-
-      const cc = getCombatCenter();
+      if (isInParryZone(atk.x, atk.y, atk)) return true;
       const prevPos = getArrowPosition(atk, Math.max(0, atk.elapsed - dt));
-      const prevDist = Math.hypot(prevPos.x - cc.x, prevPos.y - cc.y);
-      const dist = Math.hypot(atk.x - cc.x, atk.y - cc.y);
-      const parryRadius = getParryRadiusAt(atk.x, atk.y);
-      const prevParryRadius = getParryRadiusAt(prevPos.x, prevPos.y);
-
-      if (prevDist > prevParryRadius && dist <= parryRadius && dist > getBodyHitRadius() && isInParryArc(atk.x, atk.y)) {
-        return true;
-      }
-      return false;
+      return isInParryZone(prevPos.x, prevPos.y, atk);
     }
 
     function spawnSparkParticles(x, y, baseAngle) {
@@ -2119,8 +2254,8 @@
       const fwdY = Math.sin(atk.angle);
 
       const specs = [
-        { offset: -0.12, len: 0.42, ang: 0.55, px: 140, py: 60, spin: 4.5 },
-        { offset: 0.08, len: 0.48, ang: -0.65, px: -120, py: 80, spin: -5 }
+        { offset: 0.02, len: 0.55, ang: 0.45, px: 110, py: 70, spin: 5.5 },
+        { offset: -0.04, len: 0.42, ang: -0.75, px: -95, py: 85, spin: -6.2 }
       ];
 
       for (const spec of specs) {
@@ -2131,11 +2266,12 @@
           angle: atk.angle + spec.ang,
           length: atk.length * spec.len,
           thickness: atk.thickness,
-          vx: flight.vx * 0.12 + perpX * s(spec.px) + fwdX * s(30),
-          vy: flight.vy * 0.12 + perpY * s(spec.py) + fwdY * s(30),
+          headOnly: true,
+          vx: flight.vx * 0.1 + perpX * s(spec.px) + fwdX * s(24),
+          vy: flight.vy * 0.1 + perpY * s(spec.py) + fwdY * s(24),
           spin: spec.spin,
-          life: 0.22,
-          maxLife: 0.22
+          life: 0.18,
+          maxLife: 0.18
         });
       }
     }
@@ -2171,6 +2307,59 @@
       });
     }
 
+    function spawnSpecialSlashRing() {
+      const cc = getCombatCenter();
+      const angles = [0, Math.PI * 0.5, Math.PI, -Math.PI * 0.5, Math.PI * 0.25, Math.PI * 0.75];
+      for (const angle of angles) {
+        slashes.push({
+          x: cc.x,
+          y: cc.y,
+          angle,
+          len: getParryRadius() * 1.35,
+          t: 0,
+          dur: 0.32
+        });
+      }
+    }
+
+    function trySpecial() {
+      if (gameState !== GameState.PLAYING) return;
+      if (gameOver || !running) return;
+      if (!isSpecialReady()) return;
+
+      const targets = attacks.filter(a => a.alive);
+      const cleared = targets.length;
+
+      for (const atk of targets) {
+        spawnBrokenStick(atk);
+        spawnSparkParticles(atk.x, atk.y, atk.angle + Math.PI);
+        atk.alive = false;
+        atk.parried = true;
+      }
+
+      if (cleared > 0) {
+        cutCount += cleared;
+        currentCount += cleared;
+        combo += cleared;
+        if (combo > maxCombo) maxCombo = combo;
+        bumpComboVisual();
+        updateHUD();
+      }
+
+      comboAtLastSpecial = combo;
+      specialFxTimer = 0.55;
+      screenFlash = 0.42;
+      triggerMilestoneFlash(SPECIAL_COMBO_REQ);
+      playSpecialSound();
+      spawnSpecialSlashRing();
+
+      charPattern = 'down';
+      charState = 'slash';
+      charTimer = 0.22;
+
+      updateParryHint();
+    }
+
     function perfectParry(attack) {
       spawnBrokenStick(attack);
       attack.alive = false;
@@ -2183,17 +2372,21 @@
       if ([5, 10, 20, 30, 50].includes(combo)) {
         triggerMilestoneFlash(combo);
       }
+      if (isSpecialReady()) updateParryHint();
       triggerFlash();
       playParrySlash();
       spawnSparkParticles(attack.x, attack.y, attack.angle + Math.PI);
       stamina = Math.min(MAX_STAMINA, stamina + STAMINA_SWING_COST);
       updateHUD();
       difficulty = Math.min(DIFFICULTY_MAX, difficulty + getComboDiffBonus());
+      queueNextArrowSoon();
     }
 
     function takeHit() {
       combo = 0;
+      comboAtLastSpecial = 0;
       comboPop = 0;
+      updateParryHint();
       charState = 'hit';
       charShakeTimer = 0.32;
       playHitSound();
@@ -2216,18 +2409,26 @@
       parryActive = true;
       parryTimer = getParryWindow();
       parryInputDir = inputDir;
+      parryHitThisSwing = false;
 
       const slashPattern = slashDirToPattern(inputDir);
       charPattern = slashPattern;
-      charState = 'draw';
-      charTimer = 0.06;
+      if (slashPattern === 'down') {
+        charState = 'slash';
+        charTimer = 0.15;
+      } else {
+        charState = 'draw';
+        charTimer = 0.06;
+      }
       spawnSlash(slashPattern);
       playSwoosh();
 
       for (const atk of attacks) {
         if (!atk.alive) continue;
-        if (isInParryZone(atk.x, atk.y) && directionsMatch(inputDir, atk.spawnDir)) {
+        if (isInParryZone(atk.x, atk.y, atk) && directionsMatch(inputDir, atk)) {
           perfectParry(atk);
+          parryHitThisSwing = true;
+          break;
         }
       }
     }
@@ -2241,17 +2442,22 @@
         atk.x = pos.x;
         atk.y = pos.y;
 
-        const cc = getCombatCenter();
-        const dist = Math.hypot(atk.x - cc.x, atk.y - cc.y);
-
-        if (parryActive && parryInputDir && canParryAttack(atk, dt) && directionsMatch(parryInputDir, atk.spawnDir)) {
+        if (parryActive && parryInputDir && !parryHitThisSwing
+            && canParryAttack(atk, dt) && directionsMatch(parryInputDir, atk)) {
           perfectParry(atk);
+          parryHitThisSwing = true;
           continue;
         }
 
-        if (dist <= getBodyHitRadius()) {
+        if (arrowHitsPlayer(atk)) {
           atk.alive = false;
           takeHit();
+          continue;
+        }
+
+        if (atk.elapsed >= atk.travelTime) {
+          atk.alive = false;
+          queueNextArrowSoon();
         }
       }
     }
@@ -2288,13 +2494,25 @@
         ctx.globalAlpha = t;
         ctx.translate(b.x, b.y);
         ctx.rotate(b.angle);
+        ctx.fillStyle = '#111';
         ctx.strokeStyle = '#111';
-        ctx.lineWidth = b.thickness;
-        ctx.lineCap = 'round';
-        ctx.beginPath();
-        ctx.moveTo(-b.length * 0.5, 0);
-        ctx.lineTo(b.length * 0.5, 0);
-        ctx.stroke();
+        if (b.headOnly) {
+          const halfW = b.thickness * 0.72;
+          ctx.beginPath();
+          ctx.moveTo(b.length * 0.5, 0);
+          ctx.lineTo(-b.length * 0.32, -halfW);
+          ctx.lineTo(-b.length * 0.12, 0);
+          ctx.lineTo(-b.length * 0.32, halfW);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          ctx.lineWidth = b.thickness;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(-b.length * 0.5, 0);
+          ctx.lineTo(b.length * 0.5, 0);
+          ctx.stroke();
+        }
         ctx.restore();
       }
       ctx.globalAlpha = 1;
@@ -2355,6 +2573,66 @@
       } else {
         drawPlayerFallbackDot();
       }
+      drawSpecialGauge(rect);
+    }
+
+    function drawSpecialHint() {
+      if (gameState !== GameState.PLAYING || gameOver || !isSpecialReady()) return;
+
+      const cc = getCombatCenter();
+      const y = player.y + s(4);
+      const fontSize = Math.round(s(13));
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.78)';
+      ctx.font = `600 ${fontSize}px ${UI_FONT}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('↓ 방향키를 누르세요!', cc.x, y);
+      ctx.restore();
+    }
+
+    function drawSpecialGauge(rect) {
+      if (gameState !== GameState.PLAYING || gameOver) return;
+
+      const gaugeW = s(5);
+      const gaugeH = rect.h * 0.40;
+      const x = rect.x + rect.w * 0.76;
+      const y = rect.y + rect.h * 0.24;
+      const fill = getSpecialGaugeFill();
+      const ready = isSpecialReady();
+      const fillH = gaugeH * fill;
+
+      ctx.save();
+      ctx.fillStyle = ready ? 'rgba(198, 40, 40, 0.12)' : 'rgba(0, 0, 0, 0.06)';
+      ctx.fillRect(x, y, gaugeW, gaugeH);
+      ctx.strokeStyle = ready ? '#c62828' : 'rgba(0, 0, 0, 0.32)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x + 0.5, y + 0.5, gaugeW - 1, gaugeH - 1);
+
+      if (fillH > 0) {
+        ctx.fillStyle = ready ? '#c62828' : '#111';
+        ctx.fillRect(x + 1, y + gaugeH - fillH, gaugeW - 2, fillH);
+      }
+
+      if (ready) {
+        const pulse = 0.55 + 0.45 * Math.sin(gameTime * 10);
+        ctx.globalAlpha = 0.18 + pulse * 0.22;
+        ctx.strokeStyle = '#c62828';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(x - 1.5, y - 1.5, gaugeW + 3, gaugeH + 3);
+      }
+
+      if (specialFxTimer > 0) {
+        ctx.globalAlpha = Math.min(1, specialFxTimer * 2.2);
+        ctx.fillStyle = '#c62828';
+        ctx.font = `600 ${Math.round(s(9))}px ${UI_FONT}`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText('SPECIAL', x + gaugeW * 0.5, y - s(4));
+      }
+
+      ctx.restore();
     }
 
     function drawAttack(atk) {
@@ -2362,62 +2640,20 @@
       ctx.translate(atk.x, atk.y);
       ctx.rotate(atk.angle);
 
-      // 화살 속도에 따라 색상 결정
-      // travelTime 짧을수록 위협적인 색
-      const speed = atk.travelTime;
-      let arrowColor;
-      if (speed <= 0.42) {
-        arrowColor = '#111';        // 최고속: 검정 (강조)
-      } else if (speed <= 0.60) {
-        arrowColor = '#333';        // 빠름: 진회색
-      } else if (speed <= 0.90) {
-        arrowColor = '#666';        // 보통: 중간
-      } else {
-        arrowColor = '#999';        // 느림: 연회색 (위협 낮음)
-      }
-
-      ctx.strokeStyle = arrowColor;
-      ctx.setLineDash([]);
-
-      // 화살대
-      ctx.lineWidth = atk.thickness * 0.55;
-      ctx.lineCap = 'round';
+      const halfW = atk.thickness * 0.78;
+      ctx.fillStyle = '#000';
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = Math.max(1.2, atk.thickness * 0.28);
+      ctx.lineJoin = 'round';
       ctx.beginPath();
-      ctx.moveTo(-atk.length * 0.55, 0);
-      ctx.lineTo(atk.length * 0.35, 0);
+      ctx.moveTo(atk.length * 0.52, 0);
+      ctx.lineTo(-atk.length * 0.34, -halfW);
+      ctx.lineTo(-atk.length * 0.12, 0);
+      ctx.lineTo(-atk.length * 0.34, halfW);
+      ctx.closePath();
+      ctx.fill();
       ctx.stroke();
 
-      // 화살촉 (굵게)
-      ctx.lineWidth = atk.thickness;
-      ctx.beginPath();
-      ctx.moveTo(atk.length * 0.18, 0);
-      ctx.lineTo(atk.length * 0.45, 0);
-      ctx.stroke();
-
-      // 화살촉 날
-      ctx.lineWidth = atk.thickness * 0.7;
-      ctx.beginPath();
-      ctx.moveTo(atk.length * 0.45, 0);
-      ctx.lineTo(atk.length * 0.22, -atk.thickness * 1.4);
-      ctx.moveTo(atk.length * 0.45, 0);
-      ctx.lineTo(atk.length * 0.22,  atk.thickness * 1.4);
-      ctx.stroke();
-
-      // 빠른 화살 — 속도선 추가 (travelTime 0.52 이하)
-      if (speed <= 0.52) {
-        ctx.globalAlpha = 0.25;
-        ctx.lineWidth = atk.thickness * 0.3;
-        const trailLen = atk.length * 0.5;
-        [-atk.thickness * 0.8, atk.thickness * 0.8].forEach(offset => {
-          ctx.beginPath();
-          ctx.moveTo(-atk.length * 0.55, offset);
-          ctx.lineTo(-atk.length * 0.55 - trailLen, offset);
-          ctx.stroke();
-        });
-      }
-
-      ctx.setLineDash([]);
-      ctx.globalAlpha = 1;
       ctx.restore();
     }
 
@@ -2485,11 +2721,11 @@
       // 0~60초: 천천히 (1→2.5)
       // 60~120초: 가속 (2.5→4)
       // 120초~: 마무리 (4→5)
-      const timeRate = gameTime < 60
-        ? 0.025
-        : gameTime < 120
-          ? 0.042
-          : 0.015;
+      const timeRate = gameTime < 45
+        ? 0.045
+        : gameTime < 90
+          ? 0.065
+          : 0.035;
       difficulty = Math.min(DIFFICULTY_MAX, difficulty + dt * timeRate);
 
       if (parryTimer > 0) {
@@ -2497,22 +2733,24 @@
         if (parryTimer <= 0) {
           parryActive = false;
           parryInputDir = null;
+          parryHitThisSwing = false;
         }
       }
 
       if (screenFlash > 0) screenFlash -= dt;
 
       if (comboPop > 0) comboPop = Math.max(0, comboPop - dt / COMBO_POP_DURATION);
+      if (specialFxTimer > 0) specialFxTimer = Math.max(0, specialFxTimer - dt);
 
       if (charTimer > 0) charTimer -= dt;
 
       if (charState === 'draw' && charTimer <= 0) {
         charState = 'slash';
-        charTimer = (charPattern === 'down') ? 0.12 : 0.0;
+        charTimer = 0.0;
       }
       if (charState === 'slash' && charTimer <= 0) {
         charState = 'impact';
-        charTimer = 0.14;
+        charTimer = charPattern === 'down' ? 0.17 : 0.14;
       }
       if (charState === 'impact' && charTimer <= 0) {
         charState = 'return';
@@ -2540,11 +2778,6 @@
 
       if (gameTime >= ATTACKS_START_TIME) {
         spawnTimer += dt;
-        if (spawnTimer >= spawnInterval) {
-          spawnTimer = 0;
-          spawnAttack();
-          scheduleNextSpawn();
-        }
       }
 
       updateAttacks(dt);
@@ -2555,6 +2788,12 @@
       for (let i = attacks.length - 1; i >= 0; i--) {
         if (!attacks[i].alive) attacks.splice(i, 1);
       }
+
+      if (gameTime >= ATTACKS_START_TIME && getAliveArrowCount() < MAX_ON_SCREEN_ARROWS && spawnTimer >= spawnInterval) {
+        spawnTimer = 0;
+        spawnAttack();
+        scheduleNextSpawn();
+      }
     }
 
     function draw() {
@@ -2564,6 +2803,7 @@
       drawParryZone();
       drawBrokenSticks();
       drawPlayer();
+      drawSpecialHint();
       drawCombo();
 
       for (const atk of attacks) {
@@ -2604,6 +2844,9 @@
         dir = dx < 0 ? SlashDir.LEFT : SlashDir.RIGHT;
       } else if (dy < 0) {
         dir = SlashDir.UP;
+      } else if (dy > 0 && isSpecialReady()) {
+        trySpecial();
+        return;
       }
       if (dir) tryParry(dir);
     }
@@ -2620,10 +2863,18 @@
     }
 
     window.addEventListener('keydown', (e) => {
-      const dir = keyCodeToSlashDir(e.code);
-      if (!dir) return;
       if (gameState !== GameState.PLAYING) return;
       if (gameOver) return;
+
+      if (e.code === 'ArrowDown') {
+        e.preventDefault();
+        if (e.repeat) return;
+        trySpecial();
+        return;
+      }
+
+      const dir = keyCodeToSlashDir(e.code);
+      if (!dir) return;
       e.preventDefault();
       if (e.repeat) return;
       tryParry(dir);
