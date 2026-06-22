@@ -5,8 +5,8 @@
   "scripts": {
     "favicon": "node tools/process-favicon.js",
     "setup:supabase": "node tools/setup-direction-rankings.mjs",
-    "deploy": "vercel deploy --prod --yes",
-    "deploy:preview": "vercel deploy --yes"
+    "deploy": "npx vercel deploy --prod --yes --scope dlgks888g-8816s-projects",
+    "deploy:preview": "npx vercel deploy --yes --scope dlgks888g-8816s-projects"
   },
   "dependencies": {
     "pg": "^8.22.0"
