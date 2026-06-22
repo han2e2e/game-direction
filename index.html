@@ -772,7 +772,7 @@
     /*
       Supabase에서 아래 SQL을 실행해서 테이블을 만들 것:
 
-      create table rankings (
+      create table direction_rankings (
         id bigint generated always as identity primary key,
         nickname text not null,
         count int not null default 0,
@@ -780,17 +780,18 @@
         created_at timestamptz default now()
       );
 
-      alter table rankings enable row level security;
+      alter table direction_rankings enable row level security;
 
       create policy "누구나 읽기 가능"
-        on rankings for select using (true);
+        on direction_rankings for select using (true);
 
       create policy "누구나 삽입 가능"
-        on rankings for insert with check (true);
+        on direction_rankings for insert with check (true);
     */
 
-    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const SUPABASE_URL = 'https://hneozwrttqvurhexpofe.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_H_EKJPrWsxEtnq6CMbrEPg_CX0YPXnM';
+    const RANKINGS_TABLE = 'direction_rankings';
 
     let supabase = null;
     function initSupabase() {
@@ -1562,7 +1563,7 @@
 
     async function getProjectedRank(client, count, combo) {
       const { count: ahead, error } = await client
-        .from('rankings')
+        .from(RANKINGS_TABLE)
         .select('*', { count: 'exact', head: true })
         .or([
           `count.gt.${count}`,
@@ -1575,7 +1576,7 @@
 
     async function getRankForRecord(client, record) {
       const { count, error } = await client
-        .from('rankings')
+        .from(RANKINGS_TABLE)
         .select('*', { count: 'exact', head: true })
         .or([
           `count.gt.${record.count}`,
@@ -1656,7 +1657,7 @@
       }
 
       const { data, error } = await client
-        .from('rankings')
+        .from(RANKINGS_TABLE)
         .select('id, nickname, count, combo')
         .order('count', { ascending: false })
         .order('combo', { ascending: false })
@@ -1704,7 +1705,7 @@
       btn.textContent = '등록 중...';
 
       const { data, error } = await client
-        .from('rankings')
+        .from(RANKINGS_TABLE)
         .insert([{
           nickname: nickname.trim(),
           count: currentCount,

@@ -25,13 +25,34 @@
 npx serve .
 ```
 
-## Supabase 랭킹 연동 (선택)
+## Supabase 랭킹
 
-1. [Supabase](https://supabase.com)에서 새 프로젝트 생성
-2. `supabase/schema.sql` 내용을 SQL Editor에서 실행
-3. `index.html` 상단의 `SUPABASE_URL`, `SUPABASE_ANON_KEY`를 본인 프로젝트 값으로 교체
+**프로젝트:** `hneozwrttqvurhexpofe` (화살베기와 동일 Supabase, **테이블 분리**)
 
-값이 `YOUR_`로 남아 있으면 랭킹 기능만 비활성화되고 게임은 정상 플레이됩니다.
+| 항목 | 값 |
+|------|-----|
+| 테이블 | `direction_rankings` |
+| URL / KEY | `index.html`에 설정됨 |
+
+화살베기 `rankings`와 **별도 리더보드**입니다.
+
+### 테이블 생성 (최초 1회)
+
+**방법 A — SQL Editor** (권장)
+
+1. [Supabase SQL Editor](https://supabase.com/dashboard/project/hneozwrttqvurhexpofe/sql/new) 열기
+2. `supabase/schema.sql` 내용 붙여넣기 → Run
+
+**방법 B — CLI**
+
+```powershell
+cd c:\Users\Admin\Desktop\game-direction
+npm install
+$env:SUPABASE_DB_PASSWORD="(Database password)"
+npm run setup:supabase
+```
+
+Database password: Supabase → Project Settings → Database
 
 ## 배포 (Vercel)
 
